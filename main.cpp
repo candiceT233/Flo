@@ -469,7 +469,8 @@ int main() {
     edges.push_back(std::make_tuple(3, 0, 5));
     graph.AddEdges(&edges);
     graph.DeleteEdge(3, 0);
-    auto result = graph.FlowEdmondsKarp();
+    // auto result = graph.FlowEdmondsKarp();
+    auto result = graph.FlowPushRelabel();
     printf("max flow of %d\n", result->flow);
     for (auto it = (*(result->flowEdges)).begin(); it != (*(result->flowEdges)).end(); it++) {
         printf("capacity of %d pushed on edge (%d,%d)\n", 
@@ -477,6 +478,8 @@ int main() {
     }
     delete(result->flowEdges);
     free(result);
+
+    runTests();
 
     return 0;
 }

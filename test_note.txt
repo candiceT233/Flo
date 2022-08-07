@@ -1,0 +1,15 @@
+nc29    gpu_rtx_6000
+Site: ucPlatform Type: x86_64# CPUS: 2# Threads: 48RAM Size: 192 GiBTotal Storage: 200-400GB
+Processor
+Cache L1:Cache L1 D: 32768Cache L1 I: 32768Cache L2: 1048576Cache L3: 20185088Clock Speed: 2600000000Instruction Set: x86-64Model: Intel XeonOther Description: Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHzVendor: IntelVersion:
+Placement
+Node: 29Rack: 3
+GPU
+Gpu: trueGpu Count: 1Gpu Model: RTX 6000Gpu Vendor: NVIDIA
+FPGA
+Network Devices
+# Active Devices: 1
+Storage Devices
+SSD: NoNVMe: No
+RDMA
+InfiniBand: NoGPUDirect: NoNVMEoF: No
