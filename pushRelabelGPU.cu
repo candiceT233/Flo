@@ -133,7 +133,7 @@ Flow *pushRelabelLockFreeGPU(Graph *g, int s, int t) {
     free(tempHeights);
     free(tempExcessFlows);
 
-    cudaCheckError(cudaThreadSynchronize());
+    cudaCheckError(cudaDeviceSynchronize()); // updated from cudaThreadSynchronize
 
     cudaCheckError(cudaMemcpy(finalFlow, residualFlow, sizeof(int) * (g->n * g->n),
                cudaMemcpyDeviceToHost));
