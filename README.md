@@ -32,19 +32,19 @@ Avg time of dinicCPU: 0.277439 \
 Avg time of pushRelabelLockFree: 0.519422 \
 ## Edge density 0.002
 ### graph 0, 10000 vertices, 99990 edges
-Avg time of edKarpCPU: 0.180829
-Avg time of dinicCPU: 0.278054
-Avg time of pushRelabelLockFree: 0.356453
+Avg time of edKarpCPU: 0.180829 \
+Avg time of dinicCPU: 0.278054 \
+Avg time of pushRelabelLockFree: 0.356453 \
 ### graph 1, 40000 vertices, 1599960 edges
-Avg time of edKarpCPU: 3.04375
-Avg time of dinicCPU: 4.35346
-Avg time of pushRelabelLockFree: 7.15754
+Avg time of edKarpCPU: 3.04375 \
+Avg time of dinicCPU: 4.35346 \
+Avg time of pushRelabelLockFree: 7.15754 \
 ## Edge density 0.008
-graph 0, 10000 vertices, 399960 edges
-Avg time of edKarpCPU: 0.226493
-Avg time of dinicCPU: 0.237139
-Avg time of pushRelabelLockFree: 0.508934
-graph 1, 40000 vertices, 6399840 edges
-Avg time of edKarpCPU: 12.373
-Avg time of dinicCPU: 4.22206
-Avg time of pushRelabelLockFree: 9.20795
+### graph 0, 10000 vertices, 399960 edges
+Avg time of edKarpCPU: 0.226493 \
+Avg time of dinicCPU: 0.237139 \
+Avg time of pushRelabelLockFree: 0.508934 \
+### graph 1, 40000 vertices, 6399840 edges
+Avg time of edKarpCPU: 12.373 \
+Avg time of dinicCPU: 4.22206 \
+Avg time of pushRelabelLockFree: 9.20795 \
