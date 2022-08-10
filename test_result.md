@@ -35,6 +35,33 @@ Avg time of dinicCPU: 4.22206 \
 Avg time of pushRelabelLockFree: 9.20795
 
 # Ares Test Reults
+## Edge density 0.01
+### graph 0, 100 vertices, 49 edges
+Avg time of edKarpCPU: 0.028008
+Avg time of dinicCPU: 0.000685229
+Avg time of pushRelabelLockFree: 0.00169008
+### graph 1, 400 vertices, 798 edges
+Avg time of edKarpCPU: 0.00177687
+Avg time of dinicCPU: 0.0020427
+Avg time of pushRelabelLockFree: 0.0311096
+### graph 2, 10000 vertices, 499950 edges
+Avg time of edKarpCPU: 0.681339
+Avg time of dinicCPU: 0.556417
+Avg time of pushRelabelLockFree: 847.441
+### graph 3, 40000 vertices, 7999800 edges
+Avg time of edKarpCPU: 34.0884
+Avg time of dinicCPU: 4.89973
+Avg time of pushRelabelLockFree: 9.4649
+
+## Edge density 0.008
+### graph 0, 10000 vertices, 399960 edges
+Avg time of edKarpCPU: 0.318735
+Avg time of dinicCPU: 0.352274
+Avg time of pushRelabelLockFree: 0.345047
+### graph 1, 40000 vertices, 6399840 edges
+Avg time of edKarpCPU: 22.5869
+Avg time of dinicCPU: 3.46528
+Avg time of pushRelabelLockFree: 8.80149
 
 # Test Result
 ## Edge density 0.008
