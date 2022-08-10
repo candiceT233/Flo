@@ -159,9 +159,10 @@ FlowGraphResult *FlowGraph::FlowPushRelabel(std::string mode) {
         result = pushRelabelSeq(g, s, t);
     } else if (mode == "cpu") {
         result = pushRelabelLockFree(g, s, t);
-    } else {
-        result = pushRelabelLockFreeGPU(g, s, t);
     }
+    // else {
+    //     result = pushRelabelLockFreeGPU(g, s, t);
+    // }
     free(g);
     return ProcessResult(result);
 }
@@ -459,31 +460,31 @@ void runTests() {
             }
 
             // test lock free push relabel for GPU
-            if (testPushRelabelGPU) { // testPushRelabel
-                start = CycleTimer::currentSeconds();
-                result = pushRelabelLockFreeGPU(graphs[i], 0, (graphs[i]->n)-1);
-                finalTime = CycleTimer::currentSeconds() - start;
-                if (i < numGraphs) {
-                    pushRelabelGPULFTimes[i] += finalTime;
-                }
-                if (j == (trials - 1)) {
-                    pushRelabelGPULFTimes[i] /= trials;
-                    // std::cout << "Avg GPU speedup over pushRelabelSeq: " << (pushRelabelSeqTimes[i] / pushRelabelGPULFTimes[i]) << std::endl;
-                    std::cout << "Avg time of pushRelabelLockFreeGPU: " << (pushRelabelGPULFTimes[i]) << std::endl;
-                }
-                check = checkFlow(result->maxFlow, result->finalEdgeFlows, graphs[i]->n);
-                if (!check) {
-                    std::cout << "pushRelabelLFGPU flows don't agree with max flow on graph " << i << std::endl;
-                }
-                if ((refFlow != -1) && (result->maxFlow != refFlow)) {
-                    std::cout << "pushRelabelLFGPU flow doesn't agree with refFlow on graph " << i << std::endl;
-                }
+            // if (testPushRelabelGPU) { // testPushRelabel
+            //     start = CycleTimer::currentSeconds();
+            //     result = pushRelabelLockFreeGPU(graphs[i], 0, (graphs[i]->n)-1);
+            //     finalTime = CycleTimer::currentSeconds() - start;
+            //     if (i < numGraphs) {
+            //         pushRelabelGPULFTimes[i] += finalTime;
+            //     }
+            //     if (j == (trials - 1)) {
+            //         pushRelabelGPULFTimes[i] /= trials;
+            //         // std::cout << "Avg GPU speedup over pushRelabelSeq: " << (pushRelabelSeqTimes[i] / pushRelabelGPULFTimes[i]) << std::endl;
+            //         std::cout << "Avg time of pushRelabelLockFreeGPU: " << (pushRelabelGPULFTimes[i]) << std::endl;
+            //     }
+            //     check = checkFlow(result->maxFlow, result->finalEdgeFlows, graphs[i]->n);
+            //     if (!check) {
+            //         std::cout << "pushRelabelLFGPU flows don't agree with max flow on graph " << i << std::endl;
+            //     }
+            //     if ((refFlow != -1) && (result->maxFlow != refFlow)) {
+            //         std::cout << "pushRelabelLFGPU flow doesn't agree with refFlow on graph " << i << std::endl;
+            //     }
 
-                // std::cout << "Lock Free Push-relabel, GPU parallel: " << (finalTime) << std::endl;
+            //     // std::cout << "Lock Free Push-relabel, GPU parallel: " << (finalTime) << std::endl;
 
-                free(result->finalEdgeFlows);
-                free(result);
-            }
+            //     free(result->finalEdgeFlows);
+            //     free(result);
+            // }
         }
         free(graphs[i]->capacities);
         free(graphs[i]);

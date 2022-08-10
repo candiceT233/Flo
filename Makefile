@@ -20,7 +20,7 @@ LIBS       :=
 FRAMEWORKS :=
 
 NVCCFLAGS=-O3 -m64 --gpu-architecture compute_35
-LIBS += GL glut cudart
+# LIBS += GL glut cudart
 
 ifneq ($(wildcard /opt/cuda-8.0/.*),)
 # Latedays
@@ -35,7 +35,7 @@ LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))
 
 NVCC=nvcc
 
-OBJS=$(OBJDIR)/sequential.o $(OBJDIR)/cpupar.o $(OBJDIR)/pushRelabelGPU.o $(OBJDIR)/main.o
+OBJS=$(OBJDIR)/sequential.o $(OBJDIR)/cpupar.o $(OBJDIR)/main.o #$(OBJDIR)/pushRelabelGPU.o
 
 
 .PHONY: dirs clean
@@ -49,10 +49,11 @@ clean:
 		rm -rf $(OBJDIR) *~ $(EXECUTABLE)
 
 $(EXECUTABLE): dirs $(OBJS)
-		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
+		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDLIBS) $(LDFRAMEWORKS) 
+#$(LDFLAGS)
 
 $(OBJDIR)/%.o: %.cpp
 		$(CXX) $< $(CXXFLAGS) -c -o $@
 
-$(OBJDIR)/%.o: %.cu
-		$(NVCC) $< $(NVCCFLAGS) -c -o $@
+# $(OBJDIR)/%.o: %.cu
+# 		$(NVCC) $< $(NVCCFLAGS) -c -o $@
