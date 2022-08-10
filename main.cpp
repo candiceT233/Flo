@@ -264,17 +264,17 @@ void runTests() {
     bool testDinicsCPU = true;
     bool testPushRelabelLF = true;
     bool testPushRelabelGPU = false;
-    int numGraphs = 2;
+    int numGraphs = 4;
     int trials = 3;
     int smallGraphNum = 0; // used for correctness testing, not benchmarking
     int totalGraphs = numGraphs + smallGraphNum;
     double start, finalTime;
     // int numVxs[] = {500, 500, 2000, 2000, 5000, 5000, 20000, 20000, 40000, 40000};
     // int numEdges[] = {1000, 5000, 5000, 10000, 10000, 20000, 50000, 100000, 100000, 500000};
-    int numVxs[] = {10000, 40000};
+    int numVxs[] = {100, 400, 10000, 40000};
     // int numEdges[] = {10000, 50000};
 
-    int * numEdges = graphsNumEdges(numVxs, numGraphs, 0.008);
+    int * numEdges = graphsNumEdges(numVxs, numGraphs, 0.01);
     for(int i=0; i<numGraphs; i++){
         printf("V: %d, E: %d\n", numVxs[i], numEdges[i]);
     }
