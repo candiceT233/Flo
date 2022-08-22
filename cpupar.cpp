@@ -11,6 +11,8 @@
 
 #define IDX(i, j, n) ((i) * (n) + (j))
 
+#define MAX_THREADS 4 //omp_get_max_threads()
+
 struct vertexSet {
   int count;
   int maxVertices;
@@ -30,10 +32,10 @@ void vertexSetInit(vertexSet *list, int count) {
 // Take one step of "top-down" BFS. Modified from assignment 3.
 bool topDownStep(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
                  int *flowMatrix, int *parents, int *pathCapacities, int t) {
-    int maxThreads = omp_get_max_threads();
+    int maxThreads = MAX_THREADS;
     bool foundT = false;
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < frontier->count; i++) {
         // hack to get early loop termination
         if (foundT) {
@@ -69,7 +71,7 @@ bool topDownStep(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
     }
 
     // copy individual new frontiers back to main, single frontier
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         vertexSet *curFrontier = &threadFrontiers[i];
         int count = curFrontier->count;
@@ -87,16 +89,16 @@ bool topDownStep(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
 // Implements top-down BFS. Modified from assignment 3.
 int bfsTopDown(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
                int *flowMatrix, int *parents, int *pathCapacities, int s, int t) {
-    int maxThreads = omp_get_max_threads();
+    int maxThreads = MAX_THREADS;
 
     vertexSetClear(frontier);
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         vertexSetClear(&threadFrontiers[i]);
     }
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < g->n; i++) {
         parents[i] = NOT_VISITED_MARKER;
         pathCapacities[i] = 0;
@@ -122,7 +124,7 @@ Flow *edKarpCPU(Graph *g, int s, int t) {
     int *flowMatrix = (int *)malloc((g->n * g->n) * sizeof(int));
     int *parents = (int *)malloc(g->n * sizeof(int));
     int *pathCapacities = (int *)malloc(g->n * sizeof(int));
-    int maxThreads = omp_get_max_threads();
+    int maxThreads = MAX_THREADS;
 
     vertexSet list1;
     vertexSetInit(&list1, g->n);
@@ -133,12 +135,12 @@ Flow *edKarpCPU(Graph *g, int s, int t) {
                                     sizeof(vertexSet));
 
     // initialize all thread frontiers
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         vertexSetInit(&threadFrontiers[i], g->n);
     }
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < (g->n * g->n); i++) {
         flowMatrix[i] = 0;
     }
@@ -163,7 +165,7 @@ Flow *edKarpCPU(Graph *g, int s, int t) {
     result->maxFlow = flow;
     result->finalEdgeFlows = flowMatrix;
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         free(threadFrontiers[i].vertices);
     }
@@ -177,10 +179,10 @@ Flow *edKarpCPU(Graph *g, int s, int t) {
 
 bool topDownStepDinic(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
                       int *flowMatrix, int *levels, int t) {
-    int maxThreads = omp_get_max_threads();
+    int maxThreads = MAX_THREADS;
     bool foundT = false;
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < frontier->count; i++) {
         // hack to get early loop termination
         if (foundT) {
@@ -215,7 +217,7 @@ bool topDownStepDinic(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
     }
 
     // copy individual new frontiers back to main, single frontier
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         vertexSet *curFrontier = &threadFrontiers[i];
         int count = curFrontier->count;
@@ -235,17 +237,17 @@ bool topDownStepDinic(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
 // capacity still exists.
 bool bfsTopDownDinicLayered(Graph *g, vertexSet *frontier, vertexSet *threadFrontiers,
                             int *flowMatrix, int *levels, int s, int t) {
-    int maxThreads = omp_get_max_threads();
+    int maxThreads = MAX_THREADS;
     bool foundT = false;
 
     vertexSetClear(frontier);
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         vertexSetClear(&threadFrontiers[i]);
     }
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < g->n; i++) {
         levels[i] = NOT_VISITED_MARKER;
     }
@@ -270,7 +272,8 @@ Flow *dinicCPU(Graph *g, int s, int t) {
     int *curNeighbor = (int *)malloc(g->n * sizeof(int));
     int *levels = (int *)malloc(g->n * sizeof(int));
     int *flowMatrix = (int *)calloc((g->n * g->n), sizeof(int));
-    int maxThreads = omp_get_max_threads();
+    int maxThreads = MAX_THREADS;
+    printf("Max Threads: %d\n",maxThreads);
 
     vertexSet list1;
     vertexSetInit(&list1, g->n);
@@ -281,12 +284,12 @@ Flow *dinicCPU(Graph *g, int s, int t) {
                                     sizeof(vertexSet));
 
     // initialize all thread frontiers
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         vertexSetInit(&threadFrontiers[i], g->n);
     }
     while (true) {
-        #pragma omp parallel for schedule(static)
+        #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
         for (int i=0; i < g->n; i++) {
             curNeighbor[i] = 0;
         }
@@ -307,7 +310,7 @@ Flow *dinicCPU(Graph *g, int s, int t) {
     result->maxFlow = flow;
     result->finalEdgeFlows = flowMatrix;
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i=0; i < maxThreads; i++) {
         free(threadFrontiers[i].vertices);
     }
@@ -348,7 +351,7 @@ Flow *pushRelabelLockFree(Graph *g, int s, int t) {
     }
 
     // now break up vertices in chunks
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i = 0; i < std::min(g->n, omp_get_num_threads()); i++) {
         int startVx, endVx;
         if (g->n < omp_get_num_threads()) {
@@ -402,7 +405,7 @@ Flow *pushRelabelLockFree(Graph *g, int s, int t) {
     }
 
     // now update residualFlow to represent actual flow
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(static) num_threads(MAX_THREADS)
     for (int i = 0; i < (g->n * g-> n); i++) {
         residualFlow[i] = g->capacities[i] - residualFlow[i];
     }
