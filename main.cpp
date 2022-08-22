@@ -160,9 +160,9 @@ FlowGraphResult *FlowGraph::FlowPushRelabel(std::string mode) {
     } else if (mode == "cpu") {
         result = pushRelabelLockFree(g, s, t);
     }
-    // else {
-    //     result = pushRelabelLockFreeGPU(g, s, t);
-    // }
+    else {
+        result = pushRelabelLockFreeGPU(g, s, t);
+    }
     free(g);
     return ProcessResult(result);
 }
@@ -263,18 +263,20 @@ void runTests() {
     bool testEdmondsKarpCPU = true;
     bool testDinicsCPU = true;
     bool testPushRelabelLF = true;
-    bool testPushRelabelGPU = false;
-    int numGraphs = 4;
+    bool testPushRelabelGPU = true;
+
+    int numVxs[] = {1000, 2000}; //4000
+
+    int numGraphs = sizeof(numVxs)/sizeof(numVxs[0]);
     int trials = 3;
     int smallGraphNum = 0; // used for correctness testing, not benchmarking
     int totalGraphs = numGraphs + smallGraphNum;
     double start, finalTime;
     // int numVxs[] = {500, 500, 2000, 2000, 5000, 5000, 20000, 20000, 40000, 40000};
     // int numEdges[] = {1000, 5000, 5000, 10000, 10000, 20000, 50000, 100000, 100000, 500000};
-    int numVxs[] = {100, 400, 10000, 40000};
     // int numEdges[] = {10000, 50000};
 
-    int * numEdges = graphsNumEdges(numVxs, numGraphs, 0.01);
+    int * numEdges = graphsNumEdges(numVxs, numGraphs, 1);
     for(int i=0; i<numGraphs; i++){
         printf("V: %d, E: %d\n", numVxs[i], numEdges[i]);
     }
@@ -460,31 +462,31 @@ void runTests() {
             }
 
             // test lock free push relabel for GPU
-            // if (testPushRelabelGPU) { // testPushRelabel
-            //     start = CycleTimer::currentSeconds();
-            //     result = pushRelabelLockFreeGPU(graphs[i], 0, (graphs[i]->n)-1);
-            //     finalTime = CycleTimer::currentSeconds() - start;
-            //     if (i < numGraphs) {
-            //         pushRelabelGPULFTimes[i] += finalTime;
-            //     }
-            //     if (j == (trials - 1)) {
-            //         pushRelabelGPULFTimes[i] /= trials;
-            //         // std::cout << "Avg GPU speedup over pushRelabelSeq: " << (pushRelabelSeqTimes[i] / pushRelabelGPULFTimes[i]) << std::endl;
-            //         std::cout << "Avg time of pushRelabelLockFreeGPU: " << (pushRelabelGPULFTimes[i]) << std::endl;
-            //     }
-            //     check = checkFlow(result->maxFlow, result->finalEdgeFlows, graphs[i]->n);
-            //     if (!check) {
-            //         std::cout << "pushRelabelLFGPU flows don't agree with max flow on graph " << i << std::endl;
-            //     }
-            //     if ((refFlow != -1) && (result->maxFlow != refFlow)) {
-            //         std::cout << "pushRelabelLFGPU flow doesn't agree with refFlow on graph " << i << std::endl;
-            //     }
+            if (testPushRelabelGPU) { // testPushRelabel
+                start = CycleTimer::currentSeconds();
+                result = pushRelabelLockFreeGPU(graphs[i], 0, (graphs[i]->n)-1);
+                finalTime = CycleTimer::currentSeconds() - start;
+                if (i < numGraphs) {
+                    pushRelabelGPULFTimes[i] += finalTime;
+                }
+                if (j == (trials - 1)) {
+                    pushRelabelGPULFTimes[i] /= trials;
+                    // std::cout << "Avg GPU speedup over pushRelabelSeq: " << (pushRelabelSeqTimes[i] / pushRelabelGPULFTimes[i]) << std::endl;
+                    std::cout << "Avg time of pushRelabelLockFreeGPU: " << (pushRelabelGPULFTimes[i]) << std::endl;
+                }
+                check = checkFlow(result->maxFlow, result->finalEdgeFlows, graphs[i]->n);
+                if (!check) {
+                    std::cout << "pushRelabelLFGPU flows don't agree with max flow on graph " << i << std::endl;
+                }
+                if ((refFlow != -1) && (result->maxFlow != refFlow)) {
+                    std::cout << "pushRelabelLFGPU flow doesn't agree with refFlow on graph " << i << std::endl;
+                }
 
-            //     // std::cout << "Lock Free Push-relabel, GPU parallel: " << (finalTime) << std::endl;
+                // std::cout << "Lock Free Push-relabel, GPU parallel: " << (finalTime) << std::endl;
 
-            //     free(result->finalEdgeFlows);
-            //     free(result);
-            // }
+                free(result->finalEdgeFlows);
+                free(result);
+            }
         }
         free(graphs[i]->capacities);
         free(graphs[i]);
